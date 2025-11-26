@@ -10,10 +10,10 @@ func main() {
 	cfg := config{
 		addr: env.GetString("ADDR", ":8085"),
 	}
-	store := store.NewStorage(nil)
+	s := store.NewStorage(nil)
 	app := &application{
 		config: cfg,
-		store:  store,
+		store:  s,
 	}
 
 	mux := app.mount()
