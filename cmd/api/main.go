@@ -8,7 +8,7 @@ import (
 
 func main() {
 	cfg := config{
-		addr: env.GetString("ADDR", ":8085"),
+		addr: env.GetString("ADDR", ":8083"),
 	}
 	s := store.NewStorage(nil)
 	app := &application{
