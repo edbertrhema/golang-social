@@ -2,12 +2,13 @@ package main
 
 import (
 	"log"
+	"social/internal/env"
 	"social/internal/store"
 )
 
 func main() {
 	cfg := config{
-		addr: ":8085",
+		addr: env.GetString("ADDR", ":8085"),
 	}
 	store := store.NewStorage(nil)
 	app := &application{
