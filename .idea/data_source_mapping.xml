@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/a812c679-eb4b-4313-8d3b-236055514961/console.sql" value="a812c679-eb4b-4313-8d3b-236055514961" />
+    <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000001_create_users.up.sql" value="a812c679-eb4b-4313-8d3b-236055514961" />
+    <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000002_create_posts.up.sql" value="a812c679-eb4b-4313-8d3b-236055514961" />
+    <file url="file://$PROJECT_DIR$/cmd/migrate/migrations/000003_alter_post_table.up.sql" value="a812c679-eb4b-4313-8d3b-236055514961" />
+  </component>
+</project>
