@@ -37,3 +37,5 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {}
