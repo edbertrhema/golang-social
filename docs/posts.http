@@ -1,0 +1,15 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=GoLand
+
+###
+
+### POST a post into a db
+POST http://localhost:8085/v1/posts/
+Content-Type: application/json
+
+{
+  "title": "My Kisah",
+  "content": "lorem ipsum"
+}
+
