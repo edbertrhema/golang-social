@@ -1,10 +1,10 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=GoLand
+### GET POST BY ID
+GET http://localhost:8085/v1/posts/1
+Content-Type: application/json
 
 ###
 
-### POST a post into a db
+### CREATE A POST
 POST http://localhost:8085/v1/posts/
 Content-Type: application/json
 
