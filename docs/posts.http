@@ -9,11 +9,10 @@ POST http://localhost:8085/v1/posts/
 Content-Type: application/json
 
 {
-  "title": "My Kisah",
-  "content": "lorem ipsum",
+  "title": "My Stori",
+  "content": "Dimulai dari...",
   "tags": [
-    "Horror",
-    "Comedy"
+    "Romance"
   ]
 }
 
