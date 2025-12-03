@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("Resourcse not found")
+	ErrNotFound = errors.New("Resource not found")
 )
 
 type Storage struct {
