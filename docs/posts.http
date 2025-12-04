@@ -1,5 +1,5 @@
 ### GET POST BY ID
-GET http://localhost:8085/v1/posts/1
+GET http://localhost:8085/v1/posts/2
 Content-Type: application/json
 
 ###

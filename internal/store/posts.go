@@ -9,13 +9,14 @@ import (
 )
 
 type Post struct {
-	ID        int      `json: "user_id"`
-	Content   string   `json: "content"`
-	Title     string   `json: "title"`
-	UserID    int      `json: "user_id"`
-	Tags      []string `json: "tags"`
-	CreatedAt string   `json: "created_at"`
-	UpdateAt  string   `json: "updated_at"`
+	ID        int       `json:"id"`
+	Content   string    `json:"content"`
+	Title     string    `json:"title"`
+	UserID    int       `json:"user_id"`
+	Tags      []string  `json:"tags"`
+	CreatedAt string    `json:"created_at"`
+	UpdateAt  string    `json:"updated_at"`
+	Comments  []Comment `json:"comments"`
 }
 
 type PostStore struct {
@@ -56,4 +57,33 @@ func (s *PostStore) GetByID(ctx context.Context, id int) (*Post, error) {
 	}
 
 	return &post, nil
+}
+
+func (s *PostStore) Delete(ctx context.Context, id int) error {
+	query := `DELETE FROM posts WHERE id = $1`
+
+	result, err := s.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	row, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if row == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+func (s *PostStore) Update(ctx context.Context, post *Post) error {
+	query := `UPDATE posts SET content = $1, title = $2 WHERE id = $3`
+
+	result, err := s.db.ExecContext(ctx, query, post.Content, post.Title, post.ID)
+	if err != nil {
+		return err
+	}
+
 }
