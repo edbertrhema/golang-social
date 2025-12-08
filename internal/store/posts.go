@@ -85,5 +85,13 @@ func (s *PostStore) Update(ctx context.Context, post *Post) error {
 	if err != nil {
 		return err
 	}
+	row, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if row == 0 {
+		return ErrNotFound
+	}
+	return nil
 
 }
