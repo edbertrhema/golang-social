@@ -19,11 +19,7 @@ type CommentStore struct {
 }
 
 func (s *CommentStore) GetByPostID(ctx context.Context, PostId int) ([]Comment, error) {
-
-	query := `select c.id ,c."content",c.created_at, u.id, u.username  from "comments" c left join users u 
-on c.user_id = u.id 
-where c.post_id = $1
-order by c.created_at desc`
+	query := `	SELECT c.id ,c."content",c.created_at, u.id, u.username  FROM comments c left join users u on c.user_id = u.id where c.post_id = $1 order by c.created_at desc`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
 	defer cancel()
