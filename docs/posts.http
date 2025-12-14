@@ -9,10 +9,22 @@ POST http://localhost:8085/v1/posts/
 Content-Type: application/json
 
 {
-  "title": "My Stori",
-  "content": "Dimulai dari...",
+  "title": "Ken WER",
+  "content": "----.",
   "tags": [
     "Romance"
   ]
 }
 
+### DELETE A POST
+DELETE http://localhost:8085/v1/posts/4
+Content-Type: application/json
+
+### UPDATE A POST
+PATCH http://localhost:8085/v1/posts/2
+Content-Type: application/json
+
+{
+  "title": "POLIM"
+
+}

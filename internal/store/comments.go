@@ -25,6 +25,9 @@ on c.user_id = u.id
 where c.post_id = $1
 order by c.created_at desc`
 
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
+	defer cancel()
+
 	rows, err := s.db.QueryContext(ctx, query, PostId)
 	if err != nil {
 		return nil, err
