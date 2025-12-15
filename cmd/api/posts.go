@@ -131,8 +131,8 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// ///////////////////////////////////////////////MIDDLEWARE////////////////////////////////////////////////////////////////
-func (app application) postContextMiddleware(next http.Handler) http.Handler {
+// //////////////////////////////////////////////MIDDLEWARE////////////////////////////////////////////////////////////////
+func (app *application) postContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		postID, err := strconv.Atoi(chi.URLParam(r, "id"))
 		if err != nil {
