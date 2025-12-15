@@ -2,4 +2,12 @@
 GET http://localhost:8085/v1/users/1
 Content-Type: application/json
 
-###
+### CREATE A POST
+POST http://localhost:8085/v1/users/
+Content-Type: application/json
+
+{
+  "name": "Edwin",
+  "email": "edwinrhema@gmail.com",
+  "password": "admin123"
+}

@@ -4,33 +4,52 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"social/internal/store"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type CreateUserPayload struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
 }
 
-func (app *application) createUser(w http.ResponseWriter, r *http.Request) {
+func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateUserPayload
 
-	if err := readJSON(w, r, payload); err != nil {
+	if err := readJSON(w, r, &payload); err != nil {
 		app.internalServerError(w, r, err)
+		return
 	}
 
 	err := Validate.Struct(&payload)
 	if err != nil {
 		app.badRequestError(w, r, err)
+		return
 	}
 
 	ctx := r.Context()
 
-	app.store.Users.Create(ctx)
+	user := store.User{
+		Username: payload.Name,
+		Email:    payload.Email,
+		Password: payload.Password,
+	}
 
+	if err := app.store.Users.Create(ctx, &user); err != nil {
+		switch {
+		case errors.Is(err, store.ErrDuplicateKey):
+			app.duplicateError(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+
+		}
+		return
+	}
+
+	app.jsonResponse(w, http.StatusCreated, user)
 }
 
 func (app *application) getUsersHandler(w http.ResponseWriter, r *http.Request) {

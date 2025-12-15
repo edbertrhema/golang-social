@@ -9,6 +9,7 @@ import (
 
 var (
 	ErrNotFound           = errors.New("Resource not found")
+	ErrDuplicateKey       = errors.New("Duplicate Key")
 	QueryTimeoutDurations = 5 * time.Second
 )
 
