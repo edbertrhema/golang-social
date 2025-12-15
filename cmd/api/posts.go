@@ -57,6 +57,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 
+	//untuk mencari komen berdasarkan id post
 	comments, err := app.store.Comments.GetByPostID(r.Context(), post.UserID)
 	if err != nil {
 		app.internalServerError(w, r, err)
@@ -64,6 +65,7 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	//
 	post.Comments = comments
 
 	if err := app.jsonResponse(w, http.StatusOK, post); err != nil {
@@ -129,6 +131,7 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// ///////////////////////////////////////////////MIDDLEWARE////////////////////////////////////////////////////////////////
 func (app application) postContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		postID, err := strconv.Atoi(chi.URLParam(r, "id"))

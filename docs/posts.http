@@ -2,8 +2,6 @@
 GET http://localhost:8085/v1/posts/2
 Content-Type: application/json
 
-###
-
 ### CREATE A POST
 POST http://localhost:8085/v1/posts/
 Content-Type: application/json
