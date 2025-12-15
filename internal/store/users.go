@@ -60,3 +60,42 @@ func (u UserStore) GetByID(ctx context.Context, id int) (*User, error) {
 	}
 	return &user, nil
 }
+
+func (u UserStore) Delete(ctx context.Context, id int) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
+	defer cancel()
+
+	result, err := u.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	row, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if row == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+func (u UserStore) Update(ctx context.Context, user *User) error {
+	query := `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
+	defer cancel()
+
+	err := u.db.QueryRowContext(ctx, query, user.Username, user.Email, user.Password, user.ID).Scan(&user.ID, &user.CreatedAt)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return ErrNotFound
+		default:
+			return err
+		}
+	}
+	return nil
+}
