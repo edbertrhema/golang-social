@@ -54,7 +54,7 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	app.jsonResponse(w, http.StatusCreated, user)
+	app.jsonResponse(w, http.StatusCreated, &user)
 }
 
 func (app *application) getUsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,6 +62,61 @@ func (app *application) getUsersHandler(w http.ResponseWriter, r *http.Request) 
 	user := getUserFromContext(r)
 
 	if err := app.jsonResponse(w, http.StatusOK, user); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+}
+
+type FollowUserPayload struct {
+	UserId int `json:"user_id" validate:"required"`
+}
+
+func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
+	follower := getUserFromContext(r)
+
+	// revert back to auth
+	var payload FollowUserPayload
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+	ctx := r.Context()
+
+	err := app.store.Followers.Follow(ctx, follower.ID, payload.UserId)
+	if err != nil {
+		switch {
+		case errors.Is(err, store.ErrDuplicateKey):
+			app.duplicateError(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+}
+
+func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
+	follower := getUserFromContext(r)
+
+	// revert back to auth
+	var payload FollowUserPayload
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestError(w, r, err)
+		return
+	}
+	ctx := r.Context()
+
+	err := app.store.Followers.Unfollow(ctx, follower.ID, payload.UserId)
+	if err != nil {
+		app.internalServerError(w, r, err)
+		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
 		app.internalServerError(w, r, err)
 		return
 	}

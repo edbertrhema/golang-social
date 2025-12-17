@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID        int64  `json:"id"`
+	ID        int    `json:"id"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
 	Password  string `json:"-"`
@@ -46,7 +46,7 @@ func (u *UserStore) Create(ctx context.Context, user *User) error {
 	return nil
 }
 
-func (u UserStore) GetByID(ctx context.Context, id int) (*User, error) {
+func (u *UserStore) GetByID(ctx context.Context, id int) (*User, error) {
 	query := `SELECT id, username, email, created_at FROM users WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
@@ -61,7 +61,7 @@ func (u UserStore) GetByID(ctx context.Context, id int) (*User, error) {
 	return &user, nil
 }
 
-func (u UserStore) Delete(ctx context.Context, id int) error {
+func (u *UserStore) Delete(ctx context.Context, id int) error {
 	query := `DELETE FROM users WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
@@ -82,7 +82,7 @@ func (u UserStore) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (u UserStore) Update(ctx context.Context, user *User) error {
+func (u *UserStore) Update(ctx context.Context, user *User) error {
 	query := `UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)

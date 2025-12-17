@@ -11,3 +11,19 @@ Content-Type: application/json
   "email": "edwinrhema@gmail.com",
   "password": "admin123"
 }
+
+### FOLLOW A USER
+PUT http://localhost:8085/v1/users/1/follow
+Content-Type: application/json
+
+{
+  "user_id": 2
+}
+
+### UNFOLLOW A USER
+PUT http://localhost:8085/v1/users/1/unfollow
+Content-Type: application/json
+
+{
+  "user_id": 2
+}
