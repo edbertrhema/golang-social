@@ -18,10 +18,29 @@ type Post struct {
 	UpdateAt  string    `json:"updated_at"`
 	Version   int       `json:"version"`
 	Comments  []Comment `json:"comments"`
+	User      User      `json:"user"`
+}
+
+type PostWithMetadata struct {
+	Post
+	CommentCount int `json:"comments_count"`
 }
 
 type PostStore struct {
 	db *sql.DB
+}
+
+func (s *PostStore) GetUserFeed(context.Context, int) ([]*PostWithMetadata, error) {
+	query := `SELECT 
+p.id,p.user_id ,p.title ,p."content" ,p.created_at ,p."version" ,p.tags ,u.username ,
+count(c.id) as comments_count
+FROM posts p 
+left join "comments" c on c.post_id = p.id 
+left join users u on p.user_id = u.id 
+join followers f on f.follower_id = p.user_id or p.user_id = 2
+where f.user_id = 2 or p.user_id = 2
+group by p.id, u.username 
+order by p.created_at desc;`
 }
 
 func (s *PostStore) Create(ctx context.Context, post *Post) error {
