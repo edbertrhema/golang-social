@@ -1,0 +1,3 @@
+### GET FEED BY ID
+GET http://localhost:8085/v1/users/feed
+Content-Type: application/json

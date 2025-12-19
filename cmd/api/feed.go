@@ -4,7 +4,9 @@ import "net/http"
 
 func (app *application) getUserFeedHandler(w http.ResponseWriter, r *http.Request) {
 
-	feed, err := app.store.Posts.GetUserFeed(ctx, 2)
+	ctx := r.Context()
+
+	feed, err := app.store.Posts.GetUserFeed(ctx, 1)
 	if err != nil {
 		app.internalServerError(w, r, err)
 		return
