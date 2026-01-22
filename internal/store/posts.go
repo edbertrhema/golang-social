@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 
 	"github.com/lib/pq"
 )
@@ -32,20 +33,38 @@ type PostStore struct {
 
 func (s *PostStore) GetUserFeed(ctx context.Context, userID int, fq PaginatedFeedQuery) ([]*PostWithMetadata, error) {
 	query := `SELECT 
-p.id,p.user_id ,p.title ,p."content" ,p.created_at ,p."version" ,p.tags ,u.username ,
-count(c.id) as comments_count
-FROM posts p 
-left join "comments" c on c.post_id = p.id 
-left join users u on p.user_id = u.id 
-join followers f on f.follower_id = p.user_id or p.user_id = $1
-where 
-f.user_id = $1  AND (p.title ILIKE '%' || $4 || '%' OR p.content ILIKE '%' || $4 || '%')
-AND (p.tags @> $5 OR $5 = '{}')
-group by p.id, u.username 
-order by p.created_at ` + fq.Sort + `
-LIMIT $2 OFFSET $3;
+				p.id,
+				p.user_id ,
+				p.title ,
+				p."content" ,
+				p.created_at ,
+				p."version" ,
+				p.tags ,
+				u.username ,
+				count(c.id) as comments_count
+			   FROM posts p 
+			   LEFT JOIN "comments" c on c.post_id = p.id 
+			   JOIN users u on p.user_id = u.id 
+			   LEFT JOIN followers f on f.follower_id = p.user_id OR p.user_id = $1
+			   WHERE 
+			       (
+					f.user_id IS NOT NULL   -- followed users
+					OR p.user_id = 1        -- user's own posts			           
+			       )
+					AND (
+				    	p.title ILIKE '%' || $4 || '%' 
+				    	OR p.content ILIKE '%' || $4 || '%'
+					    )
+				AND (
+    $5 = '{}'::varchar[]
+    OR p.tags @> $5
+				)
+				group by p.id, u.username 
+				order by p.created_at ` + fq.Sort + `
+				LIMIT $2 OFFSET $3;
 `
-
+	log.Println(userID, fq.Limit, fq.Offset, fq.Search, pq.Array(fq.Tags))
+	log.Println(query)
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDurations)
 	defer cancel()
 
